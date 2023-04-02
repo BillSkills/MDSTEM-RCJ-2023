@@ -2,18 +2,60 @@
 #include <Wire.h>
 #include <MeMegaPi.h>
 
-MeMegaPiDCMotor motorL(PORT2B);
-MeMegaPiDCMotor motorR(PORT1B);
+#define SPEED 200
 
-void setup()
-{
+MeMegaPiDCMotor motorL(PORT1B);
+MeMegaPiDCMotor motorR(PORT2B);
+MeUltrasonicSensor ultrasonic(PORT_8);
+MeGyro gyro(PORT6);
+
+void move(int distance){
+  int intialDistance = ultrasonic.distanceCm();
+  bool done = false;
+  motorL.run(SPEED);
+  motorR.run(-SPEED);
+  while (!done){
+    delay(10);
+    done = intialDistance-distance < ultrasonic.distanceCm();
+  }
+
+  // delay(distance*100);
+
+  motorL.stop();
+  motorR.stop();
 }
 
-void loop()
-{
-  // put your main code here, to run repeatedly:
+void turnRight(){
+  int initialZ = gyro.getAngleZ();
+  motorL.run(50);
+  motorR.run(-50);
+  while(initialZ+90>gyro.getAngleZ()){
+    delay(10);
+  }
+  motorL.stop();
+  motorR.stop();
+}
 
-  motorL.run(-150);
-  motorR.run(150);
-  delay(4000);
+void turnLeft(){
+  int initialZ = gyro.getAngleZ();
+  motorL.run(-50);
+  motorR.run(50);
+  while(initialZ-90>gyro.getAngleZ()){
+    delay(10);
+  }
+  motorL.stop();
+  motorR.stop();
+}
+
+
+void setup(){
+  Serial.begin(9600);
+  move(30);
+}
+
+void loop(){
+  Serial.print("Distance: ");
+  Serial.print(ultrasonic.distanceCm());
+  Serial.println(" cm");
+  delay(100);
 }
