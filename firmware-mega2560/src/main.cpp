@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include <Wire.h>
 #include <MeMegaPi.h>
+#include <Wire.h>
 
 #define SPEED 200
 
@@ -9,14 +9,14 @@ MeMegaPiDCMotor motorR(PORT2B);
 MeUltrasonicSensor ultrasonic(PORT_8);
 MeGyro gyro(PORT6);
 
-void move(int distance){
+void move(int distance) {
   int intialDistance = ultrasonic.distanceCm();
   bool done = false;
   motorL.run(SPEED);
   motorR.run(-SPEED);
-  while (!done){
+  while (!done) {
     delay(10);
-    done = intialDistance-distance < ultrasonic.distanceCm();
+    done = intialDistance - distance < ultrasonic.distanceCm();
   }
 
   // delay(distance*100);
@@ -25,35 +25,34 @@ void move(int distance){
   motorR.stop();
 }
 
-void turnRight(){
+void turnRight() {
   int initialZ = gyro.getAngleZ();
   motorL.run(50);
   motorR.run(-50);
-  while(initialZ+90>gyro.getAngleZ()){
+  while (initialZ + 90 > gyro.getAngleZ()) {
     delay(10);
   }
   motorL.stop();
   motorR.stop();
 }
 
-void turnLeft(){
+void turnLeft() {
   int initialZ = gyro.getAngleZ();
   motorL.run(-50);
   motorR.run(50);
-  while(initialZ-90>gyro.getAngleZ()){
+  while (initialZ - 90 > gyro.getAngleZ()) {
     delay(10);
   }
   motorL.stop();
   motorR.stop();
 }
 
-
-void setup(){
+void setup() {
   Serial.begin(9600);
   move(30);
 }
 
-void loop(){
+void loop() {
   Serial.print("Distance: ");
   Serial.print(ultrasonic.distanceCm());
   Serial.println(" cm");
