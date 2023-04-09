@@ -1,14 +1,13 @@
 #include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
 #include <MeMegaPi.h>
+#include <SPI.h>
+#include <Wire.h>
 
 #define SPEED 200
 #define MOVE_DISTANCE 30
 
 volatile bool received;
 volatile byte byteReceived, byteSend;
-
 
 MeMegaPiDCMotor motorLeft(PORT1B);
 MeMegaPiDCMotor motorRight(PORT2B);
@@ -56,7 +55,7 @@ void turnLeft() {
 }
 
 // function for setting up the board as an SPI peripheral, so it can talk to the ESPs
-int spi_init(){
+int spi_init() {
   pinMode(MISO, OUTPUT);
   pinMode(MOSI, INPUT);
 
@@ -68,21 +67,16 @@ int spi_init(){
 }
 
 // thing that runs when it receives an spi call?
-ISR(SPI_STC_vect){
+ISR(SPI_STC_vect) {
   byteReceived = SPDR; // store the incomming value
   received = true;     // yep
 }
 
-void setup(){
+void setup() {}
 
-}
-
-void loop(){
-
-  if (received)
-  {
-    switch (byteReceived)
-    {
+void loop() {
+  if (received) {
+    switch (byteReceived) {
     case 0: // received 0, move 1 space
       move();
       break;
@@ -109,6 +103,6 @@ void loop(){
     received = false;
   }
 
-SPDR = byteSend; // sends data back to the master device
-delay(10);
+  SPDR = byteSend; // sends data back to the master device
+  delay(10);
 }
