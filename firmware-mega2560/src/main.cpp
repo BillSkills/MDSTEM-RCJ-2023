@@ -17,14 +17,12 @@ MeUltrasonicSensor ultrasonicLeft(PORT_7);
 MeUltrasonicSensor ultrasonicRight(PORT_6);
 MeGyro gyro(PORT_5);
 
-void move()
-{
+void move() {
   int intialDistance = ultrasonic.distanceCm();
   bool done = false;
   motorLeft.run(SPEED);
   motorRight.run(-SPEED);
-  while (!done)
-  {
+  while (!done) {
     delay(10);
     done = intialDistance - MOVE_DISTANCE < ultrasonic.distanceCm();
   }
@@ -35,26 +33,22 @@ void move()
   motorRight.stop();
 }
 
-void turnRight()
-{
+void turnRight() {
   int initialZ = gyro.getAngleZ();
   motorLeft.run(50);
   motorRight.run(-50);
-  while (initialZ + 90 > gyro.getAngleZ())
-  {
+  while (initialZ + 90 > gyro.getAngleZ()) {
     delay(10);
   }
   motorLeft.stop();
   motorRight.stop();
 }
 
-void turnLeft()
-{
+void turnLeft() {
   int initialZ = gyro.getAngleZ();
   motorLeft.run(-50);
   motorRight.run(50);
-  while (initialZ - 90 > gyro.getAngleZ())
-  {
+  while (initialZ - 90 > gyro.getAngleZ()) {
     delay(10);
   }
   motorLeft.stop();
