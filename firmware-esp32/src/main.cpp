@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-#define SERVO_PIN GPIO_NUM_13
+#define SERVO_PIN         GPIO_NUM_13
 
 Servo servo1;
 void setup() {
@@ -10,6 +10,7 @@ void setup() {
   pinMode(SERVO_PIN, OUTPUT);
 
   servo1.attach(SERVO_PIN);
+
 }
 
 void loop() {
