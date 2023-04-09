@@ -5,6 +5,7 @@ MDSTEM-RCJ-2023
 William Zheng
 */
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -48,10 +49,11 @@ void add_tile(vector<vector<int>> &coords, vector<vector<int>> &adj, vector<int>
 
 // Read sensors
 void read_sensors(vector<int> &sensors, int &n, bool init) {
-  cout << "\nread_sensors" << endl;
   if (init == true) {
+    cout << "\nEnter sensor data (4):" << endl;
     cin >> sensors[0] >> sensors[1] >> sensors[2] >> sensors[3];
   } else {
+    cout << "\nEnter sensor data (3):" << endl;
     cin >> sensors[0] >> sensors[1] >> sensors[2];
   }
 
@@ -62,9 +64,9 @@ void read_sensors(vector<int> &sensors, int &n, bool init) {
   }
 }
 
-// Print coordinates
+// Print coordinates list
 void print_coords(vector<vector<int>> coords) {
-  cout << "\nprint_coords" << endl;
+  cout << "\nCoordinates List" << endl;
   for (int i = 0; i < coords.size(); i++) {
     cout << i << ": (" << coords[i][0] << ", " << coords[i][1] << ')' << endl;
   }
@@ -72,9 +74,9 @@ void print_coords(vector<vector<int>> coords) {
 
 // Print adjacency list
 void print_adj(vector<vector<int>> adj, int n) {
-  cout << "\nprint_adj" << endl;
+  cout << "\nAdjacency List" << endl;
   for (int i = 0; i < n; i++) {
-    cout << i << ": ";
+    cout << i << " <=> ";
     for (int &x : adj[i]) {
       cout << x << " ";
     }
@@ -84,9 +86,45 @@ void print_adj(vector<vector<int>> adj, int n) {
 
 // Print tile and position coords
 void print_pos(vector<int> tile, vector<int> pos) {
-  cout << "\nprint_pos\ntile: " << tile[0] << "\npos: (" << pos[0] << ',' << pos[1] << ")\n";
+  cout << "\nCurrent Position\nTile: " << tile[0] << "\nCoords: (" << pos[0] << ',' << pos[1]
+       << ")\n";
 }
 
+// Move function
+void move(vector<vector<int>> coords, vector<int> &tile, vector<int> &pos) {
+  char move;
+  cout << "\nEnter move (L/R, F/B): ";
+  cin >> move;
+  switch (move) {
+  case 'L':
+    pos[0]--;
+    pos[2] = 3;
+    break;
+  case 'R':
+    pos[0]--;
+    pos[2] = 1;
+    break;
+  case 'F':
+    pos[1]++;
+    pos[2] = 0;
+    break;
+  case 'B':
+    pos[1]--;
+    pos[2] = 2;
+    break;
+  }
+  vector<int> newpos = {pos[0], pos[1]};
+  tile[0] = std::find(coords.begin(), coords.end(), newpos) != coords.end();
+}
+
+// Pause screen
+void pause_screen() {
+  cout << endl;
+  system("pause");
+  system("cls");
+}
+
+// Main
 int main() {
   int n = 1;
   int m = 0;
@@ -95,30 +133,17 @@ int main() {
   vector<int> sensors(4);
   bool init = true;
 
-  // Initialize coordinates
+  // Initializing tile
   vector<vector<int>> coords;
-  add_coords(coords, 0, 0);
-
-  // Initialize starting tile
+  add_coords(coords, pos[0], pos[1]);
   read_sensors(sensors, n, init);
   vector<vector<int>> adj(n);
   add_tile(coords, adj, sensors, tile, n, init, pos[0], pos[1]);
-
   init = false;
   sensors.pop_back();
-
-  print_pos(tile, pos);
-  print_coords(coords);
   print_adj(adj, n);
-
-  // Non-init run
-  read_sensors(sensors, n, init);
-  add_tile(coords, adj, sensors, tile, n, init, pos[0], pos[1]);
-  print_pos(tile, pos);
   print_coords(coords);
-  print_adj(adj, n);
-
-  system("pause");
+  pause_screen();
 }
 
 /*
@@ -128,9 +153,9 @@ Loop while there are still unexplored nodes
 
 Tile alignment and color check
 
-Wall detection
+[CHECK] Wall detection
 
-Add node to maze graph
+[CHECK] Add node to maze graph
 
 Victim detection
 
