@@ -56,8 +56,7 @@ void turnLeft() {
 }
 
 // function for setting up the board as an SPI peripheral, so it can talk to the ESPs
-int spi_init()
-{
+int spi_init(){
   pinMode(MISO, OUTPUT);
   pinMode(MOSI, INPUT);
 
@@ -69,19 +68,16 @@ int spi_init()
 }
 
 // thing that runs when it receives an spi call?
-ISR(SPI_STC_vect)
-{
+ISR(SPI_STC_vect){
   byteReceived = SPDR; // store the incomming value
   received = true;     // yep
 }
 
-void setup()
-{
+void setup(){
 
 }
 
-void loop()
-{
+void loop(){
 
   if (received)
   {
