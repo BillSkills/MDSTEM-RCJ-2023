@@ -27,7 +27,7 @@ void deployKit(int numKits) {
   }
 }
 
-void move() { SPI.transfer(0); }
+bool move() { return SPI.transfer(0); }
 void turnLeft() { SPI.transfer(1); }
 void turnRight() { SPI.transfer(2); }
 int ultrasonic() { return SPI.transfer(3); }
@@ -47,6 +47,41 @@ void setup() {
   move();
 }
 
+bool open[3]; // stores the 3 directions, left, front, right
+int randInt = random(3);
 void loop() {
+
+  // scanning phase
+  turnLeft();
+  for(int i = 0; i < 3; i++){
+    open[i] = ultrasonic() > 40;
+    turnRight();
+  }
+
+  // pick an open side
+  while(!open[randInt]){
+    randInt = random(3);
+  }
+
+  // move through one of the open slots
+  switch (randInt)
+  {
+  case 0:
+    turnLeft();
+    turnLeft();
+    move();
+    break;
+  case 1:
+    turnLeft();
+    move();
+    break;
+  case 2:
+    move();
+    break;
+  default:
+    break;
+  }
+
+  
 
 }

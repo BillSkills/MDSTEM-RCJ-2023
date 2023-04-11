@@ -15,12 +15,10 @@ volatile byte byteReceived, byteSend;
 MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_8);
-MeColorSensor color(PORT_7);
-MeRGBLed infoLight(PORT_6);
-MeGyro gyro(PORT_5);
+MeGyro gyro(PORT_7);
 
 // Move function
-void moveForward() {
+bool moveForward() {
   int intialDistance = ultrasonic.distanceCm();
   bool done = false;
   bool abort = false;
@@ -41,6 +39,7 @@ void moveForward() {
     motorRight.run(SPEED);
     abort = ultrasonic.distanceCm() >= intialDistance;
   }
+  return false;
 
   motorLeft.stop();
   motorRight.stop();
@@ -48,6 +47,8 @@ void moveForward() {
   if(terrain){
     delay(TERRAIN_WAIT);
   }
+
+  return true;
 }
 
 // Right turn
@@ -98,12 +99,14 @@ void setup(){
 
 void loop(){
 
+  moveForward();
+
   if (received)
   {
     switch (byteReceived)
     {
     case 0: // received 0, move 1 space
-      moveForward();
+      byteSend = moveForward();
       break;
     case 1: // received 1, turn left
       turnLeft();
