@@ -6,13 +6,14 @@
 #define SPEED 200
 #define MOVE_DISTANCE 30
 #define WALL_DISTANCE 10
+#define TERRAIN_WAIT 5000
 
 volatile bool received;
 volatile byte byteReceived, byteSend;
 
 
-MeMegaPiDCMotor motorLeft(PORT1B);
-MeMegaPiDCMotor motorRight(PORT2B);
+MeMegaPiDCMotor motorLeft(PORT2B);
+MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_8);
 MeColorSensor color(PORT_7);
 MeRGBLed infoLight(PORT_6);
@@ -22,14 +23,31 @@ MeGyro gyro(PORT_5);
 void moveForward() {
   int intialDistance = ultrasonic.distanceCm();
   bool done = false;
+  bool abort = false;
+  bool terrain = false;
+
   motorLeft.run(SPEED);
   motorRight.run(-SPEED);
-  while (!done) {
+
+  while(!done && !abort){
     delay(10);
     done = intialDistance - MOVE_DISTANCE < ultrasonic.distanceCm();
+    abort = color.ReturnGrayscale() < 500;
+    terrain = color.ReturnBlueData() > 500 && !abort;
   }
+
+  while(abort){
+    motorLeft.run(-SPEED);
+    motorRight.run(SPEED);
+    abort = ultrasonic.distanceCm() >= intialDistance;
+  }
+
   motorLeft.stop();
   motorRight.stop();
+
+  if(terrain){
+    delay(TERRAIN_WAIT);
+  }
 }
 
 // Right turn

@@ -31,8 +31,6 @@ void move() { SPI.transfer(0); }
 void turnLeft() { SPI.transfer(1); }
 void turnRight() { SPI.transfer(2); }
 int ultrasonic() { return SPI.transfer(3); }
-int ultrasonicLeft() { return SPI.transfer(4); }
-int ultrasonicRight() { return SPI.transfer(5); }
 
 // Setup
 void setup() {
@@ -45,19 +43,10 @@ void setup() {
   SPI.begin();
   SPI.setClockDivider(SPI_CLOCK_DIV8);
   digitalWrite(SS, HIGH);
+
+  move();
 }
 
 void loop() {
-  int sensors[3];
-  sensors[0] = ultrasonicLeft();
-  sensors[1] = ultrasonic();
-  sensors[2] = ultrasonicRight();
 
-  for (int i = 0; i < 3; i++) {
-    if (sensors[i] > 10) {
-      sensors[i] = 0;
-    } else {
-      sensors[i] = 1;
-    }
-  }
 }
