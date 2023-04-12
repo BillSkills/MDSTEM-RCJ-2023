@@ -60,7 +60,7 @@ void turnRight() {
   motorLeft.run(150);
   motorRight.run(150);
 
-  while(gyro.getAngleZ() > -88){
+  while(gyro.getAngleZ() > -90){
     gyro.update();
   }
 
@@ -89,7 +89,15 @@ void turnLeft() {
   motorLeft.run(-150);
   motorRight.run(-150);
 
-  while(gyro.getAngleZ() < 88){
+  int pos = gyro.getAngleZ();
+
+  if (pos < 0) {
+    pos = pos * -1 + 180;
+  }
+
+  int target = gyro.getAngleZ() - 90;
+
+  while(gyro.getAngleZ() < 90){
     gyro.update();
   }
 
@@ -128,6 +136,7 @@ ISR(SPI_STC_vect){
 }
 
 void setup(){
+  spi_init();
   Serial.begin(9600);
 }
 

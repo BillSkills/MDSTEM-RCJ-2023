@@ -44,46 +44,42 @@ void setup() {
   SPI.begin();
   SPI.setClockDivider(SPI_CLOCK_DIV8);
   digitalWrite(SS, HIGH);
+
+
+  move();
 }
 
 bool open[3]; // Stores the 3 directions, left, front, right
 int randInt = random(3);
 void loop() { 
-  digitalWrite(LED_BUILTIN, HIGH);
-  move();
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
-  
 
-  /*
   // scanning phase
   turnLeft();
-  for (int i = 0; i < 3; i++) {
-    open[i] = wallDetect();
-    turnRight();
-  }
+  // for (int i = 0; i < 3; i++) {
+  //   open[i] = wallDetect();
+  //   turnRight();
+  // }
 
-  // pick an open side
-  while (!open[randInt]) {
-    randInt = random(3);
-  }
+  // // pick an open side
+  // while (!open[randInt]) {
+  //   randInt = random(3);
+  // }
 
-  // move through one of the open slots
-  switch (randInt) {
-  case 0:
-    turnLeft();
-    turnLeft();
-    move();
-    break;
-  case 1:
-    turnLeft();
-    move();
-    break;
-  case 2:
-    move();
-    break;
-  default:
-    break;
-  }
-  */
+  // // move through one of the open slots
+  // switch (randInt) {
+  // case 0:
+  //   turnLeft();
+  //   turnLeft();
+  //   move();
+  //   break;
+  // case 1:
+  //   turnLeft();
+  //   move();
+  //   break;
+  // case 2:
+  //   move();
+  //   break;
+  // default:
+  //   break;
+  // }
 }
