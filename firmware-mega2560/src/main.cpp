@@ -15,7 +15,7 @@ Usan Siriwardana, William Zheng
 // Defines
 #define MOVE_SPEED 200
 #define MOVE_DISTANCE 30
-#define TURN_SPEED 150
+#define TURN_SPEED 100
 #define WALL_DISTANCE 15
 #define TERRAIN_WAIT 5000
 #define MS_DELAY 10
@@ -103,7 +103,6 @@ bool move() {
   return true;
 }
 
-
 bool wallDetect() { return ultrasonic.distanceCm() > WALL_DISTANCE; }
 
 // Right turn
@@ -112,9 +111,19 @@ void turnRight() {
   motorRight.run(TURN_SPEED);
 
   int target = helpers::round(gyro.getAngleZ()) - 90;
-  if (target < -180) target += 360;
+  if (target < -180)
+    target += 360;
 
+  Serial.println(target);
+
+<<<<<<< HEAD
   while (gyro.getAngleZ() > target) {}
+=======
+  while (gyro.getAngleZ() > target) {
+    gyro.update();
+    Serial.println(gyro.getAngleZ());
+  }
+>>>>>>> c28c2eb69fa057286e72c985b93296e5f6852b50
 
   motorLeft.stop();
   motorRight.stop();
@@ -138,9 +147,19 @@ void turnLeft() {
   motorRight.run(-TURN_SPEED);
 
   int target = helpers::round(gyro.getAngleZ()) + 90;
-  if (target > 180) target -= 360;
+  if (target > 180)
+    target -= 360;
 
+  Serial.println(target);
+
+<<<<<<< HEAD
   while (gyro.getAngleZ() < target) {}
+=======
+  while (gyro.getAngleZ() < target) {
+    gyro.update();
+    Serial.println(gyro.getAngleZ());
+  }
+>>>>>>> c28c2eb69fa057286e72c985b93296e5f6852b50
 
   motorLeft.stop();
   motorRight.stop();
@@ -188,9 +207,18 @@ bool turnedLeft = false;
 
 void loop() {
 
-  turnLeft();
-  turnRight();
-  turnLeft();
+  // turnLeft();
+  // gyro.update();
+  // Serial.println(gyro.getAngleZ());
+  // delay(1000);
+  // turnRight();
+  // gyro.update();
+  // Serial.println(gyro.getAngleZ());
+  // delay(1000);
+  // turnLeft();
+  // gyro.update();
+  // Serial.println(gyro.getAngleZ());
+  // delay(1000);
 
   /*color.getRGB(&r, &g, &b);
 
@@ -229,7 +257,7 @@ void loop() {
   //   open[i] = wallDetect();
   //   turnRight();
   // }
-  
+
   // while(!open[randInt]){
   //   randInt = random(4);
   // }
@@ -248,21 +276,35 @@ void loop() {
   // case 2:
   //   move();
   //   break;
-  
+
   // default:
   //   break;
   // }
 
-  // if(wallDetect()){
+  // if (wallDetect()) {
   //   move();
   //   turnedLeft = !turnedLeft;
-  // } else if (turnedLeft){
-  //   while(!wallDetect()){
-  //     turnRight();
-  //   }
   // } else {
-  //   while(!wallDetect()){
-  //     turnLeft();
+  //   if (turnedLeft) {
+  //     while (!wallDetect()) {
+  //       turnRight();
+  //     }
+  //   } else {
+  //     while (!wallDetect()) {
+  //       turnLeft();
+  //     }
   //   }
   // }
+
+  if(wallDetect()){
+    move();
+  } else{
+    if(rand()%2 == 0){
+      turnLeft();
+    } else {
+      turnRight();
+    }
+
+    delay(100);
+  }
 }
