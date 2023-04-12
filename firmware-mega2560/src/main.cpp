@@ -35,6 +35,19 @@ float currentGyroCorrection = 0;
 int direction = 1; // west, north, east, south
 float r, g, b;
 
+class helpers {
+
+  public:
+    static double round(double num, int mult = 90) {
+      num += 180;
+      int result = num + mult/2;
+      result -= result % mult;
+      result -= 180;
+      return result;
+    }
+
+};
+
 // Move function
 bool move() {
   int intialDistance = ultrasonic.distanceCm();
@@ -82,8 +95,8 @@ void turnRight() {
   motorLeft.run(TURN_SPEED);
   motorRight.run(TURN_SPEED);
 
-  int target = gyro.getAngleZ() - 90;
-  if (target < 180) target += 360;
+  int target = helpers::round(gyro.getAngleZ()) - 90;
+  if (target < -180) target += 360;
 
   while (gyro.getAngleZ() > target) {
     gyro.update();
@@ -108,8 +121,8 @@ void turnLeft() {
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
-  int target = gyro.getAngleZ() + 90;
-  if (target < 180) target -= 360;
+  int target = helpers::round(gyro.getAngleZ()) + 90;
+  if (target > 180) target -= 360;
 
   while (gyro.getAngleZ() < target) {
     gyro.update();
@@ -150,13 +163,7 @@ ISR(SPI_STC_vect) {
 void setup() {
   spi_init();
   Serial.begin(9600);
-  
-  while(!color.begin()){
-    Serial.println("eeeeeeeeee");
-  }
-
-  color.enable();
-  color.setInterrupt(false);
+  gyro.begin();
 }
 
 int randInt = random(4);
@@ -164,14 +171,18 @@ bool open[3];
 bool turnedLeft = false;
 
 void loop() {
-  color.getRGB(&r, &g, &b);
-  
+
+  turnLeft();
+  turnRight();
+  turnLeft();
+
+  /*color.getRGB(&r, &g, &b);
 
   Serial.print(r);
   Serial.print(" ");
   Serial.print(g);
   Serial.print(" ");
-  Serial.println(b);
+  Serial.println(b);*/
 
   // if (received) {
   //   switch (byteReceived) {
