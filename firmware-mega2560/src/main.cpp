@@ -55,50 +55,56 @@ bool moveForward() {
 
 // Right turn
 void turnRight() {
-  int initialZ = gyro.getAngleZ();
-  motorLeft.run(50);
-  motorRight.run(-50);
-  while (initialZ + 90 > gyro.getAngleZ()) {
+  gyro.begin();
+
+  motorLeft.run(150);
+  motorRight.run(150);
+
+  while(gyro.getAngleZ() > -88){
     gyro.update();
   }
+
   motorLeft.stop();
   motorRight.stop();
-}
 
-void turnLeftUnil(int angle){
-  motorLeft.run(-150);
-  motorRight.run(-150);
 
-  while(gyro.getAngleZ() < angle){
-    gyro.fast_update();
+  // keep track of the absolutedirection
+  switch (direction)
+  {
+  case 3:
+    direction = 0;
+    break;
+  default:
+    direction ++;
+    break;
   }
-
-  motorLeft.stop();
-  motorRight.stop();
 }
+
 
 // Left turn
 void turnLeft() {
+
+  gyro.begin();
+
+  motorLeft.run(-150);
+  motorRight.run(-150);
+
+  while(gyro.getAngleZ() < 88){
+    gyro.update();
+  }
+
+  motorLeft.stop();
+  motorRight.stop();
+
+
+  // keep track of the absolutedirection
   switch (direction)
   {
   case 0:
-    turnLeftUnil(178);
     direction = 3;
     break;
-  case 1:
-    turnLeftUnil(90);
-    direction = 0;
-    break;
-  case 2:
-    turnLeftUnil(0);
-    direction = 1;
-    break;
-  case 3:
-    turnLeftUnil(-90);
-    direction = 2;
-    break;
-  
   default:
+    direction --;
     break;
   }
 }
@@ -123,10 +129,6 @@ ISR(SPI_STC_vect){
 
 void setup(){
   Serial.begin(9600);
-  gyro.begin();
-
-  turnLeft();
-  turnLeft();
 }
 
 void loop(){
@@ -144,8 +146,8 @@ void loop(){
     case 2: // received 2, turn right
       turnRight();
       break;
-    case 3: // received 3, return measurement from front ultrasonic
-      byteSend = ultrasonic.distanceCm();
+    case 3: // received 3, return whether there is a wall in front
+      byteSend = ultrasonic.distanceCm() > 40;
       break;
 
     default:

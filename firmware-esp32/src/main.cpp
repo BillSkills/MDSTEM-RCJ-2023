@@ -33,6 +33,8 @@ bool wallDetect() { return SPI.transfer(3); }
 
 // Setup
 void setup() {
+  Serial.begin(9600);
+
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(SERVO_PIN, OUTPUT);
   servo1.attach(SERVO_PIN);
@@ -46,8 +48,12 @@ void setup() {
 
 bool open[3]; // Stores the 3 directions, left, front, right
 int randInt = random(3);
-void loop() {
+void loop() { 
+  digitalWrite(LED_BUILTIN, HIGH);
   move();
+  delay(100);
+  digitalWrite(LED_BUILTIN, LOW);
+  
 
   /*
   // scanning phase
