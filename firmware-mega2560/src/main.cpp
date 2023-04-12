@@ -289,17 +289,15 @@ void loop() {
   //   }
   // }
 
-  // if(wallDetect()){
-  //   move();
-  // } else{
-  //   if(rand()%2 == 0){
-  //     turnLeft();
-  //   } else {
-  //     turnRight();
-  //   }
-
-  //   delay(100);
-  // }
+  if (wallDetect()) {
+    move();
+  } else {
+    int num = rand();
+    if(num%2 == 0){
+      turnLeft();
+    } else {
+      turnRight();
+    }
 
   // if(wallDetect()){
   //   move();
