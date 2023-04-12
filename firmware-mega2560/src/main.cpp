@@ -112,12 +112,12 @@ bool move() {
 
 // Right turn
 void turnRight() {
-  motorLeft.run(TURN_SPEED);
-  motorRight.run(TURN_SPEED);
-
   gyro.update();
   int target = helpers::round(gyro.getAngleZ()) - 90;
   if (target < -180) target += 360;
+  
+  motorLeft.run(TURN_SPEED);
+  motorRight.run(TURN_SPEED);
 
   Serial.println(target);
 
@@ -143,12 +143,12 @@ void turnRight() {
 
 // Left turn
 void turnLeft() {
-  motorLeft.run(-TURN_SPEED);
-  motorRight.run(-TURN_SPEED);
-
   gyro.update();
   int target = helpers::round(gyro.getAngleZ()) + 90;
   if (target > 180) target -= 360;
+  
+  motorLeft.run(-TURN_SPEED);
+  motorRight.run(-TURN_SPEED);
 
   Serial.println(target);
 
