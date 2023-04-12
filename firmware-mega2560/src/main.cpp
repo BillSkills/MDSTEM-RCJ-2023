@@ -100,6 +100,8 @@ bool move() {
   motorLeft.stop();
   motorRight.stop();
 
+  delay(100);
+
   // if (terrain) {
   //   delay(TERRAIN_WAIT);
   // }
