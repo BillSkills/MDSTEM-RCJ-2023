@@ -35,3 +35,4 @@
 .vscode/
 
 firmware-esp32cam/lib/tflite_models/
+.vscode/
