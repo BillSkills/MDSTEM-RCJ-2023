@@ -149,8 +149,14 @@ ISR(SPI_STC_vect) {
 
 void setup() {
   spi_init();
-  color.begin();
   Serial.begin(9600);
+  
+  while(!color.begin()){
+    Serial.println("eeeeeeeeee");
+  }
+
+  color.enable();
+  color.setInterrupt(false);
 }
 
 int randInt = random(4);
@@ -159,6 +165,7 @@ bool turnedLeft = false;
 
 void loop() {
   color.getRGB(&r, &g, &b);
+  
 
   Serial.print(r);
   Serial.print(" ");
@@ -221,7 +228,14 @@ void loop() {
 
   // if(wallDetect()){
   //   move();
-  // } else{
-  //   turnLeft();
+  //   turnedLeft = !turnedLeft;
+  // } else if (turnedLeft){
+  //   while(!wallDetect()){
+  //     turnRight();
+  //   }
+  // } else {
+  //   while(!wallDetect()){
+  //     turnLeft();
+  //   }
   // }
 }
