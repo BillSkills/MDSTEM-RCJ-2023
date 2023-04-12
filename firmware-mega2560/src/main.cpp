@@ -114,8 +114,7 @@ void turnRight() {
   motorRight.run(TURN_SPEED);
 
   int target = helpers::round(gyro.getAngleZ()) - 90;
-  if (target < -180)
-    target += 360;
+  if (target < -180) target += 360;
 
   Serial.println(target);
 
@@ -145,8 +144,7 @@ void turnLeft() {
   motorRight.run(-TURN_SPEED);
 
   int target = helpers::round(gyro.getAngleZ()) + 90;
-  if (target > 180)
-    target -= 360;
+  if (target > 180) target -= 360;
 
   Serial.println(target);
 
@@ -298,7 +296,7 @@ void loop() {
     } else {
       turnRight();
     }
-  }
+  }  }
 
   
 }
