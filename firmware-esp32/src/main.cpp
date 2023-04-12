@@ -2,7 +2,6 @@
 #include <SPI.h>
 #include <Servo.h>
 #include <algorithm>
-#include <vector>
 
 #define SERVO_PIN GPIO_NUM_13
 
@@ -30,7 +29,7 @@ void deployKit(int numKits) {
 bool move() { return SPI.transfer(0); }
 void turnLeft() { SPI.transfer(1); }
 void turnRight() { SPI.transfer(2); }
-int ultrasonic() { return SPI.transfer(3); }
+bool wallDetect() { return SPI.transfer(3); }
 
 // Setup
 void setup() {
@@ -43,29 +42,28 @@ void setup() {
   SPI.begin();
   SPI.setClockDivider(SPI_CLOCK_DIV8);
   digitalWrite(SS, HIGH);
-
-  move();
 }
 
-bool open[3]; // stores the 3 directions, left, front, right
+bool open[3]; // Stores the 3 directions, left, front, right
 int randInt = random(3);
 void loop() {
+  move();
 
+  /*
   // scanning phase
   turnLeft();
-  for(int i = 0; i < 3; i++){
-    open[i] = ultrasonic() > 40;
+  for (int i = 0; i < 3; i++) {
+    open[i] = wallDetect();
     turnRight();
   }
 
   // pick an open side
-  while(!open[randInt]){
+  while (!open[randInt]) {
     randInt = random(3);
   }
 
   // move through one of the open slots
-  switch (randInt)
-  {
+  switch (randInt) {
   case 0:
     turnLeft();
     turnLeft();
@@ -81,7 +79,5 @@ void loop() {
   default:
     break;
   }
-
-  
-
+  */
 }
