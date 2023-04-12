@@ -115,6 +115,7 @@ void turnRight() {
   motorLeft.run(TURN_SPEED);
   motorRight.run(TURN_SPEED);
 
+  gyro.update();
   int target = helpers::round(gyro.getAngleZ()) - 90;
   if (target < -180) target += 360;
 
@@ -145,6 +146,7 @@ void turnLeft() {
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
+  gyro.update();
   int target = helpers::round(gyro.getAngleZ()) + 90;
   if (target > 180) target -= 360;
 
