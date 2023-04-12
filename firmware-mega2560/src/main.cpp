@@ -79,12 +79,13 @@ bool wallDetect() { return ultrasonic.distanceCm() > WALL_DISTANCE; }
 
 // Right turn
 void turnRight() {
-  gyro.begin();
-
   motorLeft.run(TURN_SPEED);
   motorRight.run(TURN_SPEED);
 
-  while (gyro.getAngleZ() > -90) {
+  int target = gyro.getAngleZ() - 90;
+  if (target < 180) target += 360;
+
+  while (gyro.getAngleZ() > target) {
     gyro.update();
   }
 
@@ -104,12 +105,13 @@ void turnRight() {
 
 // Left turn
 void turnLeft() {
-  gyro.begin();
-
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
-  while (gyro.getAngleZ() < 90) {
+  int target = gyro.getAngleZ() + 90;
+  if (target < 180) target -= 360;
+
+  while (gyro.getAngleZ() < target) {
     gyro.update();
   }
 
