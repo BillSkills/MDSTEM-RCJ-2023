@@ -296,7 +296,7 @@ void loop() {
     } else {
       turnRight();
     }
-  }  }
+  }
 
   
 }
