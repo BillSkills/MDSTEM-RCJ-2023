@@ -35,6 +35,19 @@ float currentGyroCorrection = 0;
 int direction = 1; // west, north, east, south
 float r, g, b;
 
+class helpers {
+
+  public:
+    static double round(double num, int mult = 90) {
+      num += 180;
+      int result = num + mult/2;
+      result -= result % mult;
+      result -= 180;
+      return result;
+    }
+
+};
+
 // Move function
 bool move() {
   int intialDistance = ultrasonic.distanceCm();
@@ -82,7 +95,7 @@ void turnRight() {
   motorLeft.run(TURN_SPEED);
   motorRight.run(TURN_SPEED);
 
-  int target = round(gyro.getAngleZ()) - 90;
+  int target = helpers::round(gyro.getAngleZ()) - 90;
   if (target < -180) target += 360;
 
   while (gyro.getAngleZ() > target) {
@@ -108,7 +121,7 @@ void turnLeft() {
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
-  int target = round(gyro.getAngleZ()) + 90;
+  int target = helpers::round(gyro.getAngleZ()) + 90;
   if (target > 180) target -= 360;
 
   while (gyro.getAngleZ() < target) {
@@ -127,14 +140,6 @@ void turnLeft() {
   //   direction--;
   //   break;
   // }
-}
-
-double round(double num, int mult = 90) {
-  num += 180;
-  int result = num + mult/2;
-  result -= result % mult;
-  result -= 180;
-  return result;
 }
 
 // Function for setting up the board as an SPI peripheral, so it can talk to the ESPs
@@ -162,48 +167,23 @@ void setup() {
   gyro.begin();
 }
 
-<<<<<<< HEAD
+int randInt = random(4);
+bool open[3];
+bool turnedLeft = false;
+
 void loop() {
 
   turnLeft();
   turnRight();
   turnLeft();
 
-  /*if (received) {
-    switch (byteReceived) {
-    case 0:
-      byteSend = moveForward();
-      break;
-    case 1:
-      turnLeft();
-      break;
-    case 2:
-      turnRight();
-      break;
-    case 3:
-      byteSend = ultrasonic.distanceCm() > 40;
-      break;
-
-    default:
-      break;
-    }
-    received = false;
-  }
-  SPDR = byteSend;
-  delay(MS_DELAY);*/
-=======
-int randInt = random(4);
-bool open[3];
-bool turnedLeft = false;
-
-void loop() {
-  color.getRGB(&r, &g, &b);
+  /*color.getRGB(&r, &g, &b);
 
   Serial.print(r);
   Serial.print(" ");
   Serial.print(g);
   Serial.print(" ");
-  Serial.println(b);
+  Serial.println(b);*/
 
   // if (received) {
   //   switch (byteReceived) {
@@ -263,5 +243,4 @@ void loop() {
   // } else{
   //   turnLeft();
   // }
->>>>>>> ad4f43635d1b7b31e1a143e74883816a799f60ca
 }
