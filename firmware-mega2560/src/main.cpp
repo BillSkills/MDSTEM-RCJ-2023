@@ -102,7 +102,6 @@ void turnRight() {
 
 // Left turn
 void turnLeft() {
-<<<<<<< HEAD
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
@@ -110,22 +109,6 @@ void turnLeft() {
   if (target < 180) target -= 360;
 
   while (gyro.getAngleZ() < target) {
-=======
-  gyro.begin();
-
-  motorLeft.run(-TURN_SPEED);
-  motorRight.run(-TURN_SPEED);
-
-  int pos = gyro.getAngleZ();
-
-  if (pos < 0) {
-    pos = pos * -1 + 180;
-  }
-
-  int target = gyro.getAngleZ() - 90;
-
-  while (gyro.getAngleZ() < 90) {
->>>>>>> 71109db1a11bc4853b01994280e38466a498fdd7
     gyro.update();
   }
 
