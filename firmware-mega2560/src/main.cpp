@@ -116,10 +116,14 @@ void turnRight() {
 
   Serial.println(target);
 
+<<<<<<< HEAD
+  while (gyro.getAngleZ() > target) {}
+=======
   while (gyro.getAngleZ() > target) {
     gyro.update();
     Serial.println(gyro.getAngleZ());
   }
+>>>>>>> c28c2eb69fa057286e72c985b93296e5f6852b50
 
   motorLeft.stop();
   motorRight.stop();
@@ -148,10 +152,14 @@ void turnLeft() {
 
   Serial.println(target);
 
+<<<<<<< HEAD
+  while (gyro.getAngleZ() < target) {}
+=======
   while (gyro.getAngleZ() < target) {
     gyro.update();
     Serial.println(gyro.getAngleZ());
   }
+>>>>>>> c28c2eb69fa057286e72c985b93296e5f6852b50
 
   motorLeft.stop();
   motorRight.stop();
