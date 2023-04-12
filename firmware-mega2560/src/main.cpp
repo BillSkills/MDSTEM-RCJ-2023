@@ -37,14 +37,31 @@ float r, g, b;
 
 class helpers {
 
-public:
-  static double round(double num, int mult = 90) {
-    num += 180;
-    int result = num + mult / 2;
-    result -= result % mult;
-    result -= 180;
-    return result;
-  }
+  public:
+    static double round(double num, int mult = 90) {
+      num += 180;
+      int result = num + mult/2;
+      result -= result % mult;
+      result -= 180;
+      return result;
+    }
+    float y(float x)
+    {
+      return 1/(1+x*x);
+    }
+ 
+    float trapezoidal(float a, float b, float n)
+    {
+      float h = (b-a)/n;
+  
+      float s = y(a)+y(b);
+  
+      for (int i = 1; i < n; i++)
+          s += 2*y(a+i*h);
+  
+      return (h/2)*s;
+    }
+
 };
 
 // Move function
@@ -107,6 +124,8 @@ void turnRight() {
   motorLeft.stop();
   motorRight.stop();
 
+  gyro.update();
+
   // keep track of the absolutedirection
   // switch (direction) {
   // case 3:
@@ -136,6 +155,8 @@ void turnLeft() {
 
   motorLeft.stop();
   motorRight.stop();
+
+  gyro.update();
 
   // keep track of the absolutedirection
   // switch (direction) {
