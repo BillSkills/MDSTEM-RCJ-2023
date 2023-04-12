@@ -116,12 +116,14 @@ void turnRight() {
 
   Serial.println(target);
 
-  while (gyro.getAngleZ() > target) {}
+  while (gyro.getAngleZ() > target) {
+    gyro.update();
+  }
 
   motorLeft.stop();
   motorRight.stop();
 
-  gyro.update();
+  gyro.begin()
 
   // keep track of the absolutedirection
   // switch (direction) {
@@ -145,12 +147,14 @@ void turnLeft() {
 
   Serial.println(target);
 
-  while (gyro.getAngleZ() < target) {}
+  while (gyro.getAngleZ() < target) {
+    gyro.update();
+  }
 
   motorLeft.stop();
   motorRight.stop();
 
-  gyro.update();
+  gyro.begin();
 
   // keep track of the absolutedirection
   // switch (direction) {
