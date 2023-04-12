@@ -25,7 +25,7 @@ MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_6);
 MeGyro gyro(PORT_7);
-Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+// Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
 /* VARIABLES */
 volatile bool received;
@@ -147,7 +147,7 @@ ISR(SPI_STC_vect) {
 
 void setup() {
   spi_init();
-  color.begin();
+  // color.begin();
   Serial.begin(9600);
 }
 
@@ -156,13 +156,13 @@ bool open[3];
 bool turnedLeft = false;
 
 void loop() {
-  color.getRGB(&r, &g, &b);
+  // color.getRGB(&r, &g, &b);
 
-  Serial.print(r);
-  Serial.print(" ");
-  Serial.print(g);
-  Serial.print(" ");
-  Serial.println(b);
+  // Serial.print(r);
+  // Serial.print(" ");
+  // Serial.print(g);
+  // Serial.print(" ");
+  // Serial.println(b);
 
   // if (received) {
   //   switch (byteReceived) {
@@ -217,9 +217,9 @@ void loop() {
   //   break;
   // }
 
-  // if(wallDetect()){
-  //   move();
-  // } else{
-  //   turnLeft();
-  // }
+  if(wallDetect()){
+    move();
+  } else{
+    turnLeft();
+  }
 }

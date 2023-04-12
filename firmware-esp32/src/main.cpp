@@ -10,7 +10,7 @@ Usan Siriwardana, William Zheng
 #include <Servo.h>
 #include <algorithm>
 
-#define SERVO_PIN GPIO_NUM_
+#define SERVO_PIN GPIO_NUM_2
 
 Servo servo1;
 
@@ -53,39 +53,42 @@ void setup() {
   digitalWrite(SS, HIGH);
 
   move();
+  turnLeft();
+  turnRight();
 }
 
 bool open[3]; // Stores the 3 directions, left, front, right
 int randInt = random(3);
 void loop() {
 
-  // scanning phase
-  turnLeft();
-  for (int i = 0; i < 3; i++) {
-    open[i] = wallDetect();
-    turnRight();
-  }
 
-  // pick an open side
-  while (!open[randInt]) {
-    randInt = random(3);
-  }
+  // // scanning phase
+  // turnLeft();
+  // for (int i = 0; i < 3; i++) {
+  //   open[i] = wallDetect();
+  //   turnRight();
+  // }
 
-  // move through one of the open slots
-  switch (randInt) {
-  case 0:
-    turnLeft();
-    turnLeft();
-    move();
-    break;
-  case 1:
-    turnLeft();
-    move();
-    break;
-  case 2:
-    move();
-    break;
-  default:
-    break;
-  }
+  // // pick an open side
+  // while (!open[randInt]) {
+  //   randInt = random(3);
+  // }
+
+  // // move through one of the open slots
+  // switch (randInt) {
+  // case 0:
+  //   turnLeft();
+  //   turnLeft();
+  //   move();
+  //   break;
+  // case 1:
+  //   turnLeft();
+  //   move();
+  //   break;
+  // case 2:
+  //   move();
+  //   break;
+  // default:
+  //   break;
+  // }
 }
