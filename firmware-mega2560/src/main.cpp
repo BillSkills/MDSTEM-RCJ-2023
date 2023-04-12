@@ -286,10 +286,11 @@ void loop() {
   //   }
   // }
 
-  if(wallDetect()){
+  if (wallDetect()) {
     move();
-  } else{
-    if(rand()%2 == 0){
+  } else {
+    int num = rand();
+    if(num%2 == 0){
       turnLeft();
     } else {
       turnRight();
