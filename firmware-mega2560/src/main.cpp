@@ -16,7 +16,7 @@ Usan Siriwardana, William Zheng
 #define MOVE_SPEED 200
 #define MOVE_DISTANCE 30
 #define TURN_SPEED 100
-#define WALL_DISTANCE 15
+#define WALL_DISTANCE 9
 #define TERRAIN_WAIT 5000
 #define MS_DELAY 10
 
@@ -25,7 +25,8 @@ MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_6);
 MeGyro gyro(PORT_7);
-Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+// MeColorSensor color(PORT_8);
+// Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
 /* VARIABLES */
 volatile bool received;
@@ -64,6 +65,9 @@ class helpers {
 
 };
 
+
+bool wallDetect() { return ultrasonic.distanceCm() > WALL_DISTANCE; }
+
 // Move function
 bool move() {
   int intialDistance = ultrasonic.distanceCm();
@@ -75,7 +79,7 @@ bool move() {
   motorRight.run(-MOVE_SPEED);
 
   while (!done) {
-    done = ultrasonic.distanceCm() > intialDistance - MOVE_DISTANCE;
+    done = wallDetect();
     // color.getRGB(&r, &g, &b);
 
     // abort = r < 50 && g < 50 && b < 50;
@@ -103,7 +107,6 @@ bool move() {
   return true;
 }
 
-bool wallDetect() { return ultrasonic.distanceCm() > WALL_DISTANCE; }
 
 // Right turn
 void turnRight() {
@@ -123,7 +126,7 @@ void turnRight() {
   motorLeft.stop();
   motorRight.stop();
 
-  gyro.begin()
+  gyro.begin();
 
   // keep track of the absolutedirection
   // switch (direction) {
@@ -196,9 +199,6 @@ bool open[3];
 bool turnedLeft = false;
 
 void loop() {
-
-  turnLeft();
-  delay(100);
 
   // turnLeft();
   // gyro.update();
@@ -298,10 +298,7 @@ void loop() {
     } else {
       turnRight();
     }
+  }
 
-  // if(wallDetect()){
-  //   move();
-  // } else{
-  //   turnLeft();
-  // }
+  
 }
