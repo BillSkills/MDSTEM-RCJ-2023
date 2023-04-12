@@ -11,6 +11,11 @@
 volatile bool received;
 volatile byte byteReceived, byteSend;
 
+float gyroCorrection = 0;
+float currentGyroCorrection = 0;
+
+int direction = 1; // west, north, east, south
+
 
 MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
@@ -54,22 +59,48 @@ void turnRight() {
   motorLeft.run(50);
   motorRight.run(-50);
   while (initialZ + 90 > gyro.getAngleZ()) {
-    delay(10);
+    gyro.update();
   }
+  motorLeft.stop();
+  motorRight.stop();
+}
+
+void turnLeftUnil(int angle){
+  motorLeft.run(-150);
+  motorRight.run(-150);
+
+  while(gyro.getAngleZ() < angle){
+    gyro.fast_update();
+  }
+
   motorLeft.stop();
   motorRight.stop();
 }
 
 // Left turn
 void turnLeft() {
-  int initialZ = gyro.getAngleZ();
-  motorLeft.run(-50);
-  motorRight.run(50);
-  while (initialZ - 90 > gyro.getAngleZ()) {
-    delay(10);
+  switch (direction)
+  {
+  case 0:
+    turnLeftUnil(178);
+    direction = 3;
+    break;
+  case 1:
+    turnLeftUnil(90);
+    direction = 0;
+    break;
+  case 2:
+    turnLeftUnil(0);
+    direction = 1;
+    break;
+  case 3:
+    turnLeftUnil(-90);
+    direction = 2;
+    break;
+  
+  default:
+    break;
   }
-  motorLeft.stop();
-  motorRight.stop();
 }
 
 // function for setting up the board as an SPI peripheral, so it can talk to the ESPs
@@ -93,16 +124,12 @@ ISR(SPI_STC_vect){
 void setup(){
   Serial.begin(9600);
   gyro.begin();
-  // delay(2000);
 
-  // moveForward();
+  turnLeft();
+  turnLeft();
 }
 
 void loop(){
-
-  // Serial.println(ultrasonic.distanceCm());
-  Serial.println(gyro.getAngleZ() - 0.01);
-  gyro.update();
 
   if (received)
   {
