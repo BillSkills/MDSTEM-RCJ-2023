@@ -79,7 +79,7 @@ bool move() {
   motorRight.run(-MOVE_SPEED);
 
   while (!done) {
-    done = wallDetect();
+    done = !wallDetect();
     // color.getRGB(&r, &g, &b);
 
     // abort = r < 50 && g < 50 && b < 50;
