@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <MeMegaPi.h>
+#include <Adafruit_TCS34725.h>
 
 #define SPEED 200
 #define MOVE_DISTANCE 30
@@ -22,6 +23,10 @@ MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_6);
 MeGyro gyro(PORT_7);
 
+Adafruit_TCS34725 colour = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+
+float r, g, b;
+
 // Move function
 bool moveForward() {
   int intialDistance = ultrasonic.distanceCm();
@@ -32,23 +37,30 @@ bool moveForward() {
   motorLeft.run(SPEED);
   motorRight.run(-SPEED);
 
-  while(ultrasonic.distanceCm() > intialDistance - MOVE_DISTANCE){
+  while(!done && !abort){
     delay(10);
+    done = ultrasonic.distanceCm() > intialDistance - MOVE_DISTANCE;
+    colour.getRGB(&r, &g, &b);
+
+    abort = r < 50 && g < 50 && b < 50;
+    terrain = b > 50 && !abort;
   }
 
-  // while(abort){
-  //   motorLeft.run(-SPEED);
-  //   motorRight.run(SPEED);
-  //   abort = ultrasonic.distanceCm() >= intialDistance;
-  // }
-  // return false;
+  if(abort){
+    while(abort){
+      motorLeft.run(-SPEED);
+      motorRight.run(SPEED);
+      abort = ultrasonic.distanceCm() >= intialDistance;
+    }
+    return false;
+  }
 
   motorLeft.stop();
   motorRight.stop();
 
-  // if(terrain){
-  //   delay(TERRAIN_WAIT);
-  // }
+  if(terrain){
+    delay(TERRAIN_WAIT);
+  }
 
   return true;
 }
@@ -137,6 +149,7 @@ ISR(SPI_STC_vect){
 
 void setup(){
   spi_init();
+  colour.begin();
   Serial.begin(9600);
 }
 

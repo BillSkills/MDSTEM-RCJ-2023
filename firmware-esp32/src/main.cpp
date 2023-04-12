@@ -3,7 +3,7 @@
 #include <Servo.h>
 #include <algorithm>
 
-#define SERVO_PIN GPIO_NUM_13
+#define SERVO_PIN GPIO_NUM_
 
 Servo servo1;
 
