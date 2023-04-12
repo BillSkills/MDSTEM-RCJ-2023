@@ -79,8 +79,8 @@ void turnRight() {
   motorLeft.run(TURN_SPEED);
   motorRight.run(TURN_SPEED);
 
-  int target = gyro.getAngleZ() - 90;
-  if (target < 180) target += 360;
+  int target = round(gyro.getAngleZ()) - 90;
+  if (target < -180) target += 360;
 
   while (gyro.getAngleZ() > target) {
     gyro.update();
@@ -105,8 +105,8 @@ void turnLeft() {
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
-  int target = gyro.getAngleZ() + 90;
-  if (target < 180) target -= 360;
+  int target = round(gyro.getAngleZ()) + 90;
+  if (target > 180) target -= 360;
 
   while (gyro.getAngleZ() < target) {
     gyro.update();
@@ -124,6 +124,14 @@ void turnLeft() {
     direction--;
     break;
   }
+}
+
+double round(double num, int mult = 90) {
+  num += 180;
+  int result = num + mult/2;
+  result -= result % mult;
+  result -= 180;
+  return result;
 }
 
 // Function for setting up the board as an SPI peripheral, so it can talk to the ESPs
@@ -148,10 +156,16 @@ void setup() {
   spi_init();
   color.begin();
   Serial.begin(9600);
+  gyro.begin();
 }
 
 void loop() {
-  if (received) {
+
+  turnLeft();
+  turnRight();
+  turnLeft();
+
+  /*if (received) {
     switch (byteReceived) {
     case 0:
       byteSend = moveForward();
@@ -172,5 +186,5 @@ void loop() {
     received = false;
   }
   SPDR = byteSend;
-  delay(MS_DELAY);
+  delay(MS_DELAY);*/
 }
