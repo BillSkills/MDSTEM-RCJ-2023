@@ -1,3 +1,10 @@
+/*
+main.cpp (ESP32)
+April 12, 2023
+MDSTEM-RCJ-2023
+Usan Siriwardana, William Zheng
+*/
+
 #include <Arduino.h>
 #include <SPI.h>
 #include <Servo.h>
@@ -45,41 +52,40 @@ void setup() {
   SPI.setClockDivider(SPI_CLOCK_DIV8);
   digitalWrite(SS, HIGH);
 
-
   move();
 }
 
 bool open[3]; // Stores the 3 directions, left, front, right
 int randInt = random(3);
-void loop() { 
+void loop() {
 
   // scanning phase
   turnLeft();
-  // for (int i = 0; i < 3; i++) {
-  //   open[i] = wallDetect();
-  //   turnRight();
-  // }
+  for (int i = 0; i < 3; i++) {
+    open[i] = wallDetect();
+    turnRight();
+  }
 
-  // // pick an open side
-  // while (!open[randInt]) {
-  //   randInt = random(3);
-  // }
+  // pick an open side
+  while (!open[randInt]) {
+    randInt = random(3);
+  }
 
-  // // move through one of the open slots
-  // switch (randInt) {
-  // case 0:
-  //   turnLeft();
-  //   turnLeft();
-  //   move();
-  //   break;
-  // case 1:
-  //   turnLeft();
-  //   move();
-  //   break;
-  // case 2:
-  //   move();
-  //   break;
-  // default:
-  //   break;
-  // }
+  // move through one of the open slots
+  switch (randInt) {
+  case 0:
+    turnLeft();
+    turnLeft();
+    move();
+    break;
+  case 1:
+    turnLeft();
+    move();
+    break;
+  case 2:
+    move();
+    break;
+  default:
+    break;
+  }
 }

@@ -1,30 +1,38 @@
-#include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <MeMegaPi.h>
-#include <Adafruit_TCS34725.h>
+/*
+main.cpp (MegaPi)
+April 12, 2023
+MDSTEM-RCJ-2023
+Usan Siriwardana, William Zheng
+*/
 
-#define SPEED 200
+// Includes
+#include <Adafruit_TCS34725.h>
+#include <Arduino.h>
+#include <MeMegaPi.h>
+#include <SPI.h>
+#include <Wire.h>
+
+// Defines
+#define MOVE_SPEED 200
 #define MOVE_DISTANCE 30
+#define TURN_SPEED 150
 #define WALL_DISTANCE 10
 #define TERRAIN_WAIT 5000
+#define MS_DELAY 10
 
-volatile bool received;
-volatile byte byteReceived, byteSend;
-
-float gyroCorrection = 0;
-float currentGyroCorrection = 0;
-
-int direction = 1; // west, north, east, south
-
-
+// Sensor ports
 MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_6);
 MeGyro gyro(PORT_7);
+Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
-Adafruit_TCS34725 colour = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
-
+/* VARIABLES */
+volatile bool received;
+volatile byte byteReceived, byteSend;
+float gyroCorrection = 0;
+float currentGyroCorrection = 0;
+int direction = 1; // west, north, east, south
 float r, g, b;
 
 // Move function
@@ -37,17 +45,18 @@ bool moveForward() {
   motorLeft.run(SPEED);
   motorRight.run(-SPEED);
 
-  while(!done && !abort){
-    delay(10);
+  while (!done && !abort) {
     done = ultrasonic.distanceCm() > intialDistance - MOVE_DISTANCE;
-    colour.getRGB(&r, &g, &b);
+    color.getRGB(&r, &g, &b);
 
     abort = r < 50 && g < 50 && b < 50;
     terrain = b > 50 && !abort;
+
+    delay(10);
   }
 
-  if(abort){
-    while(abort){
+  if (abort) {
+    while (abort) {
       motorLeft.run(-SPEED);
       motorRight.run(SPEED);
       abort = ultrasonic.distanceCm() >= intialDistance;
@@ -58,7 +67,7 @@ bool moveForward() {
   motorLeft.stop();
   motorRight.stop();
 
-  if(terrain){
+  if (terrain) {
     delay(TERRAIN_WAIT);
   }
 
@@ -69,37 +78,33 @@ bool moveForward() {
 void turnRight() {
   gyro.begin();
 
-  motorLeft.run(150);
-  motorRight.run(150);
+  motorLeft.run(TURN_SPEED);
+  motorRight.run(TURN_SPEED);
 
-  while(gyro.getAngleZ() > -90){
+  while (gyro.getAngleZ() > -90) {
     gyro.update();
   }
 
   motorLeft.stop();
   motorRight.stop();
 
-
   // keep track of the absolutedirection
-  switch (direction)
-  {
+  switch (direction) {
   case 3:
     direction = 0;
     break;
   default:
-    direction ++;
+    direction++;
     break;
   }
 }
 
-
 // Left turn
 void turnLeft() {
-
   gyro.begin();
 
-  motorLeft.run(-150);
-  motorRight.run(-150);
+  motorLeft.run(-TURN_SPEED);
+  motorRight.run(-TURN_SPEED);
 
   int pos = gyro.getAngleZ();
 
@@ -109,76 +114,69 @@ void turnLeft() {
 
   int target = gyro.getAngleZ() - 90;
 
-  while(gyro.getAngleZ() < 90){
+  while (gyro.getAngleZ() < 90) {
     gyro.update();
   }
 
   motorLeft.stop();
   motorRight.stop();
 
-
   // keep track of the absolutedirection
-  switch (direction)
-  {
+  switch (direction) {
   case 0:
     direction = 3;
     break;
   default:
-    direction --;
+    direction--;
     break;
   }
 }
 
-// function for setting up the board as an SPI peripheral, so it can talk to the ESPs
-int spi_init(){
+// Function for setting up the board as an SPI peripheral, so it can talk to the ESPs
+int spi_init() {
   pinMode(MISO, OUTPUT);
   pinMode(MOSI, INPUT);
 
-  SPCR |= _BV(SPE); // control register stuff i dont understand
-                    // turns on spi in slave mode or something
+  SPCR |= _BV(SPE); // Control register stuff I don't understand
+                    // Turns on SPI in slave mode or something
   received = false;
 
   SPI.attachInterrupt();
 }
 
-// thing that runs when it receives an spi call?
-ISR(SPI_STC_vect){
-  byteReceived = SPDR; // store the incomming value
-  received = true;     // yep
+// Thing that runs when it receives an SPI call?
+ISR(SPI_STC_vect) {
+  byteReceived = SPDR; // Store the incoming value
+  received = true;
 }
 
-void setup(){
+void setup() {
   spi_init();
-  colour.begin();
+  color.begin();
   Serial.begin(9600);
 }
 
-void loop(){
-
-  if (received)
-  {
-    switch (byteReceived)
-    {
-    case 0: // received 0, move 1 space
+void loop() {
+  if (received) {
+    switch (byteReceived) {
+    case 0:
       byteSend = moveForward();
       break;
-    case 1: // received 1, turn left
+    case 1:
       turnLeft();
       break;
-    case 2: // received 2, turn right
+    case 2:
       turnRight();
       break;
-    case 3: // received 3, return whether there is a wall in front
+    case 3:
       byteSend = ultrasonic.distanceCm() > 40;
       break;
 
     default:
       break;
     }
-
     received = false;
   }
-
-SPDR = byteSend; // sends data back to the master device
-delay(10);
+  SPDR = byteSend;
+  delay(MS_DELAY);
 }
