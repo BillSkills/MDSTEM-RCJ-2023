@@ -25,7 +25,7 @@ MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
 MeUltrasonicSensor ultrasonic(PORT_6);
 MeGyro gyro(PORT_7);
-Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+// Adafruit_TCS34725 color = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
 /* VARIABLES */
 volatile bool received;
@@ -79,13 +79,12 @@ bool wallDetect() { return ultrasonic.distanceCm() > WALL_DISTANCE; }
 
 // Right turn
 void turnRight() {
+  gyro.begin();
+
   motorLeft.run(TURN_SPEED);
   motorRight.run(TURN_SPEED);
 
-  int target = round(gyro.getAngleZ()) - 90;
-  if (target < -180) target += 360;
-
-  while (gyro.getAngleZ() > target) {
+  while (gyro.getAngleZ() > -90) {
     gyro.update();
   }
 
@@ -105,13 +104,12 @@ void turnRight() {
 
 // Left turn
 void turnLeft() {
+  gyro.begin();
+
   motorLeft.run(-TURN_SPEED);
   motorRight.run(-TURN_SPEED);
 
-  int target = round(gyro.getAngleZ()) + 90;
-  if (target > 180) target -= 360;
-
-  while (gyro.getAngleZ() < target) {
+  while (gyro.getAngleZ() < 90) {
     gyro.update();
   }
 
@@ -127,14 +125,6 @@ void turnLeft() {
   //   direction--;
   //   break;
   // }
-}
-
-double round(double num, int mult = 90) {
-  num += 180;
-  int result = num + mult/2;
-  result -= result % mult;
-  result -= 180;
-  return result;
 }
 
 // Function for setting up the board as an SPI peripheral, so it can talk to the ESPs
@@ -157,53 +147,22 @@ ISR(SPI_STC_vect) {
 
 void setup() {
   spi_init();
-  color.begin();
+  // color.begin();
   Serial.begin(9600);
-  gyro.begin();
 }
 
-<<<<<<< HEAD
-void loop() {
-
-  turnLeft();
-  turnRight();
-  turnLeft();
-
-  /*if (received) {
-    switch (byteReceived) {
-    case 0:
-      byteSend = moveForward();
-      break;
-    case 1:
-      turnLeft();
-      break;
-    case 2:
-      turnRight();
-      break;
-    case 3:
-      byteSend = ultrasonic.distanceCm() > 40;
-      break;
-
-    default:
-      break;
-    }
-    received = false;
-  }
-  SPDR = byteSend;
-  delay(MS_DELAY);*/
-=======
 int randInt = random(4);
 bool open[3];
 bool turnedLeft = false;
 
 void loop() {
-  color.getRGB(&r, &g, &b);
+  // color.getRGB(&r, &g, &b);
 
-  Serial.print(r);
-  Serial.print(" ");
-  Serial.print(g);
-  Serial.print(" ");
-  Serial.println(b);
+  // Serial.print(r);
+  // Serial.print(" ");
+  // Serial.print(g);
+  // Serial.print(" ");
+  // Serial.println(b);
 
   // if (received) {
   //   switch (byteReceived) {
@@ -258,10 +217,9 @@ void loop() {
   //   break;
   // }
 
-  // if(wallDetect()){
-  //   move();
-  // } else{
-  //   turnLeft();
-  // }
->>>>>>> ad4f43635d1b7b31e1a143e74883816a799f60ca
+  if(wallDetect()){
+    move();
+  } else{
+    turnLeft();
+  }
 }
