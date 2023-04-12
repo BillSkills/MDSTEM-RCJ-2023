@@ -289,6 +289,7 @@ void loop() {
 
   if (wallDetect()) {
     move();
+    delay(100);
   } else {
     int num = rand();
     if(num%2 == 0){
@@ -296,7 +297,5 @@ void loop() {
     } else {
       turnRight();
     }
-  }  }
-
-  
+  }  
 }
