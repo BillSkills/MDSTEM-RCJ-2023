@@ -14,7 +14,7 @@ volatile byte byteReceived, byteSend;
 
 MeMegaPiDCMotor motorLeft(PORT2B);
 MeMegaPiDCMotor motorRight(PORT3B);
-MeUltrasonicSensor ultrasonic(PORT_8);
+MeUltrasonicSensor ultrasonic(PORT_6);
 MeGyro gyro(PORT_7);
 
 // Move function
@@ -27,26 +27,23 @@ bool moveForward() {
   motorLeft.run(SPEED);
   motorRight.run(-SPEED);
 
-  while(!done && !abort){
+  while(ultrasonic.distanceCm() > intialDistance - MOVE_DISTANCE){
     delay(10);
-    done = intialDistance - MOVE_DISTANCE < ultrasonic.distanceCm();
-    abort = color.ReturnGrayscale() < 500;
-    terrain = color.ReturnBlueData() > 500 && !abort;
   }
 
-  while(abort){
-    motorLeft.run(-SPEED);
-    motorRight.run(SPEED);
-    abort = ultrasonic.distanceCm() >= intialDistance;
-  }
-  return false;
+  // while(abort){
+  //   motorLeft.run(-SPEED);
+  //   motorRight.run(SPEED);
+  //   abort = ultrasonic.distanceCm() >= intialDistance;
+  // }
+  // return false;
 
   motorLeft.stop();
   motorRight.stop();
 
-  if(terrain){
-    delay(TERRAIN_WAIT);
-  }
+  // if(terrain){
+  //   delay(TERRAIN_WAIT);
+  // }
 
   return true;
 }
@@ -94,12 +91,18 @@ ISR(SPI_STC_vect){
 }
 
 void setup(){
+  Serial.begin(9600);
+  gyro.begin();
+  // delay(2000);
 
+  // moveForward();
 }
 
 void loop(){
 
-  moveForward();
+  // Serial.println(ultrasonic.distanceCm());
+  Serial.println(gyro.getAngleZ() - 0.01);
+  gyro.update();
 
   if (received)
   {
