@@ -199,6 +199,9 @@ bool turnedLeft = false;
 
 void loop() {
 
+  turnLeft();
+  delay(100);
+
   // turnLeft();
   // gyro.update();
   // Serial.println(gyro.getAngleZ());
@@ -288,15 +291,21 @@ void loop() {
   //   }
   // }
 
-  if(wallDetect()){
-    move();
-  } else{
-    if(rand()%2 == 0){
-      turnLeft();
-    } else {
-      turnRight();
-    }
+  // if(wallDetect()){
+  //   move();
+  // } else{
+  //   if(rand()%2 == 0){
+  //     turnLeft();
+  //   } else {
+  //     turnRight();
+  //   }
 
-    delay(100);
-  }
+  //   delay(100);
+  // }
+
+  // if(wallDetect()){
+  //   move();
+  // } else{
+  //   turnLeft();
+  // }
 }
